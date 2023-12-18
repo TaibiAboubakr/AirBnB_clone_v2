@@ -131,6 +131,11 @@ class HBNBCommand(cmd.Cmd):
             try:
                 key, value = arg.split('=')
                 key = key.replace('_', ' ')
+                if '.' in value:
+                    value = float(value)
+                elif value.isdigit() or (value[0] == '-' and
+                                         value[1:].isdigit()):
+                    value = int(value)
                 value = value.replace('"', '').replace('_', ' ')
                 setattr(new_instance, key, value)
             except ValueError:
