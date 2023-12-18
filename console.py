@@ -126,17 +126,20 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         args_list = shlex.split(args)
-        kv_args = {}
         for arg in args_list[1:]:
             try:
-                arg_sp = arg.split('=')
-                arg_sp[1] = eval(arg_sp[1])
-                if type(arg_sp[1]) is str:
-                    arg_sp[1] = arg_sp[1].replace("_", " ").replace('"', '\\"')
-                kv_args[arg_sp[0]] = arg_sp[1]
+                key, value = arg.split('=')
+                key = key.replace('_', ' ')
+                if '.' in value:
+                    value = float(value)
+                elif value.isdigit() or (value[0] == '-' and
+                                         value[1:].isdigit()):
+                    value = int(value)
+                else:
+                    value = value.replace('"', '').replace('_', ' ')
             except ValueError:
                 continue
-        new_instance = HBNBCommand.classes[className](**kv_args)
+        new_instance = HBNBCommand.classes[className]()
         storage.save()
         print(new_instance.id)
 
