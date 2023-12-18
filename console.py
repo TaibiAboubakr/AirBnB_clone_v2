@@ -134,7 +134,7 @@ class HBNBCommand(cmd.Cmd):
                 value = value.replace('"', '').replace('_', ' ')
                 setattr(new_instance, key, value)
             except ValueError:
-                print(f"Invalid parameter: {arg}. Skipping...")
+                continue
         storage.save()
         print(new_instance.id)
         storage.save()
