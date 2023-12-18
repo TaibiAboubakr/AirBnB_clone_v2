@@ -130,7 +130,6 @@ class HBNBCommand(cmd.Cmd):
         for arg in args_list[1:]:
             try:
                 key, value = arg.split('=')
-                key = key.replace('_', ' ')
                 if '.' in value:
                     value = float(value)
                 elif value.isdigit() or (value[0] == '-' and
