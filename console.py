@@ -127,7 +127,6 @@ class HBNBCommand(cmd.Cmd):
             return
         new_instance = HBNBCommand.classes[className]()
         args_list = shlex.split(args)
-        print(args_list)
         for arg in args_list[1:]:
             try:
                 key, value = arg.split('=')
@@ -135,7 +134,6 @@ class HBNBCommand(cmd.Cmd):
                 value = value.replace('"', '').replace('_', ' ')
                 setattr(new_instance, key, value)
             except ValueError:
-                # Skip parameters that don't fit the requirements
                 print(f"Invalid parameter: {arg}. Skipping...")
         storage.save()
         print(new_instance.id)
