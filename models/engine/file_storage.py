@@ -55,3 +55,5 @@ class FileStorage:
             className = obj.__class__.__name__
             delobj = className + '.' + obj.id
             self.__objects.pop(delobj)
+        else:
+            return
