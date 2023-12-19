@@ -10,6 +10,7 @@ from models.user import User
 from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
+from models import base_model
 
 
 class DBStorage:
@@ -62,7 +63,7 @@ class DBStorage:
     def reload(self):
         """Create all tables in the database and
     create the current database session"""
-    Base.metadata.create_all(self.__engine)
-    self.__session = scoped_session(sessionmaker(bind=self.__engine,
-                                                 expire_on_commit=False))
+        self.__session = scoped_session(sessionmaker(bind=self.__engine,
+                                                     expire_on_commit=False))
+        base_model.Base.metadata.create_all(self.__engine)
 
