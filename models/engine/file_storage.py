@@ -5,8 +5,8 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 import os
-from models import base_model  # Assuming there is a 'base' module where your models are defined
-
+from models import base_model
+from models.base_model import Base
 
 
 class FileStorage:
@@ -69,26 +69,34 @@ class FileStorage:
             delobj = f"{className}.{obj.id}"
             del self.__objects[delobj]
 
+
 class DBStorage:
     """ New engine fo MySQL storage """
-    __engine=None
-    __session=None
-    
+    __engine = None
+    __session = None
+
     def __init__(self):
         """ Initialization method """
-        db_url = 'mysql+mysqldb://hbnb_dev:hbnb_dev_pwd@localhost:3306/hbnb_dev_db'
-        db_url1 = f"mysql+mysqldb://{os.environ['HBNB_MYSQL_USER']}:{os.environ['HBNB_MYSQL_PWD']}@{os.environ['HBNB_MYSQL_HOST']}:3306/{os.environ['HBNB_MYSQL_DB']}"
+        db_url1 = 'mysql+mysqldb://hbnb_dev:hbnb_dev_pwd@\
+            localhost:3306/hbnb_dev_db'
+        user = os.environ['HBNB_MYSQL_USER']
+        password = os.environ['HBNB_MYSQL_PWD']
+        hostname, = os.environ['HBNB_MYSQL_HOST']
+        db_name = os.environ['HBNB_MYSQL_DB']
+        db_url = f"mysql+mysqldb://{user}:{password}@{hostname}:3306/{db_name}"
         self.__engine = create_engine(db_url, pool_pre_ping=True)
-        
+
         if os.environ.get('HBNB_ENV') == 'test':
-            self.__engine.execute("DROP TABLE IF EXISTS cities, amenities, users, places, reviews, states;")
+            self.__engine.execute("DROP TABLE IF EXISTS cities, amenities,\
+                                  users, places, reviews, states;")
         self.__session = scoped_session(sessionmaker(bind=self.__engine))
 
     def all(self, cls=None):
         """Query on the current database session"""
 
         objects = {}
-        classes = [base_model.User, base_model.State, base_model.City, base_model.Amenity, base_model.Place, base_model.Review]
+        classes = [base_model.User, base_model.State, base_model.City,
+                   base_model.Amenity, base_model.Place, base_model.Review]
 
         if cls is not None:
             classes = [cls]
@@ -99,20 +107,23 @@ class DBStorage:
                 key = f"{obj.__class__.__name__}.{obj.id}"
                 objects[key] = obj
         return objects
+
     def new(self, obj):
         """ add the object to the current database session """
         self.__session.add(obj)
-        
+
     def save(self):
         """ commit all changes of the current database session """
         self.__session.commit()
-        
-    def delete(self, obj=None): 
+
+    def delete(self, obj=None):
         """  delete from the current database session obj if not None """
         if obj:
             self.__session.delete(obj)
 
     def reload(self):
-        """Create all tables in the database and create the current database session"""
-        self.__session = scoped_session(sessionmaker(bind=self.__engine, expire_on_commit=False))
+        """Create all tables in the database
+        and create the current database session"""
+        self.__session = scoped_session(sessionmaker(bind=self.__engine,
+                                                     expire_on_commit=False))
         base_model.Base.metadata.create_all(self.__engine)
