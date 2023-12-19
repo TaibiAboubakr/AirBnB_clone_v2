@@ -20,21 +20,20 @@ class DBStorage:
 
     def __init__(self):
         """initializing DBStorage"""
-        MySQL_user = getenv("HBNB_MYSQL_USER")
-        MySQL_pwd = getenv("HBNB_MYSQL_PWD")
-        MySQL_host = getenv("HBNB_MYSQL_HOST", default="localhost")
-        MySQL_db = getenv("HBNB_MYSQL_DB")
-        MySQL_env = getenv("HBNB_ENV")
+        user = getenv("HBNB_MYSQL_USER")
+        pwd = getenv("HBNB_MYSQL_PWD")
+        host = getenv("HBNB_MYSQL_HOST", default="localhost")
+        db = getenv("HBNB_MYSQL_DB")
+        env = getenv("HBNB_ENV")
 
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.
-                                      format(MySQL_user, MySQL_pwd, MySQL_host, MySQL_db),
+                                      format(user, pwd, host, db),
                                       pool_pre_ping=True)
-        if MySQL_env == "test":
+        if env == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """query on the current database session"""
-        from models import storage
         classes = ["User", "State", "City", "Amenity", "Place", "Review"]
         objs = {}
         if cls:
@@ -47,6 +46,7 @@ class DBStorage:
                 objs.update({obj.__class__.__name__ + '.' + obj.id: obj
                              for obj in class_objects})
         return objs
+
     def new(self, obj):
         """Add the object to the current database session"""
         self.__session.add(obj)
@@ -63,7 +63,7 @@ class DBStorage:
     def reload(self):
         """Create all tables in the database and
     create the current database session"""
-        self.__session = scoped_session(sessionmaker(bind=self.__engine,
-                                                     expire_on_commit=False))
-        base_model.Base.metadata.create_all(self.__engine)
-
+        Base.metadata.create_all(self.__engine)
+        sess = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Session = scoped_session(sess)
+        self.__session = Session()

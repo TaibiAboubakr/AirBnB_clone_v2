@@ -19,7 +19,7 @@ class State(BaseModel, Base):
         name = ""
 
         @property
-        def get_cities(self):
+        def cities(self):
             """getter that returns the cities with state_id"""
             from models import storage
             city_instname = []
