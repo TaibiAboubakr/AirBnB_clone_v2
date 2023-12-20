@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from os import getenv
 from sqlalchemy.orm import relationship
 
@@ -18,8 +18,8 @@ class Place(BaseModel):
         number_bathrooms = Column(Integer, nullable=False, default=0)
         max_guest = Column(Integer, nullable=False, default=0)
         price_by_night = Column(Integer, nullable=False, default=0)
-        latitude = Column(float)
-        longitude = Column(float)
+        latitude = Column(Float)
+        longitude = Column(Float)
         cities = relationship('City', back_populates='places',
                               cascade='all, delete')
         users = relationship('User', back_populates='places',
