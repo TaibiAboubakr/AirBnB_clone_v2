@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 
 
 
-class Review(BaseModel):
+class Review(BaseModel, Base):
     """ Review class to store review information """
     if getenv("HBNB_TYPE_STORAGE") == "db":
         __tablename__ = "reviews"
