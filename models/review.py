@@ -8,7 +8,9 @@ from sqlalchemy.orm import relationship
 
 
 class Review(BaseModel):
-    """ Review classto store review information """
+    """ Review class to store review information """
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        __tablename__ = "reviews"
     place_id = ""
     user_id = ""
     text = ""
