@@ -6,5 +6,8 @@ from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
 
-class Amenity(BaseModel):
+
+class Amenity(BaseModel, Base):
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        __tablename__ = 'amenities' 
     name = ""
