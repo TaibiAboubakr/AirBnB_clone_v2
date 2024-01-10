@@ -27,20 +27,20 @@ def do_pack():
 
 def do_deploy(archive_path):
     """distributes an archive to your web servers."""
-    if not os.path.exists(archive_path):
-        return False
-    archive_name = str(archive_path).split('/')[-1]
-    archive_basename = str(archive_name).split('.')[0]
+    if os.path.exists(archive_path):
+        archive_name = str(archive_path).split('/')[-1]
+        archive_basename = str(archive_name).split('.')[0]
 
-    put(archive_path, '/tmp/')
-    run(f'sudo mkdir -p /data/web_static/releases/\
-           {archive_basename}/')
-    run(f'sudo tar -xzf /tmp/{archive_name}\
-           -C /data/web_static/releases/{archive_basename}')
-    run(f'sudo rm -rf /tmp/{archive_name}')
-    run(f"sudo mv /data/web_static/releases/{archive_basename}/web_static/*\
-        /data/web_static/releases/{archive_basename}/")
-    run('sudo rm -rf /data/web_static/current')
-    run('ln -sf /data/web_static/releases/{archive_basename}\
-                 /data/web_static/current')
-    return True
+        put(archive_path, '/tmp/')
+        run(f'sudo mkdir -p /data/web_static/releases/\
+            {archive_basename}/')
+        run(f'sudo tar -xzf /tmp/{archive_name}\
+            -C /data/web_static/releases/{archive_basename}')
+        run(f'sudo rm -rf /tmp/{archive_name}')
+        run(f"sudo mv /data/web_static/releases/{archive_basename}/web_static/*\
+            /data/web_static/releases/{archive_basename}/")
+        run('sudo rm -rf /data/web_static/current')
+        run('ln -sf /data/web_static/releases/{archive_basename}\
+                    /data/web_static/current')
+        return True
+    return False
