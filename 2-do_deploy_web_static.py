@@ -14,21 +14,15 @@ def do_deploy(archive_path):
     archive_name = str(archive_path).split('/')[-1]
     archive_basename = str(archive_name).split('.')[0]
 
-    if put(archive_path, '/tmp/').failed:
-        return False
-    if run(f'sudo mkdir -p /data/web_static/releases/\
-           {archive_basename}/').failed:
-        return False
-    if run(f'sudo tar -xzf /tmp/{archive_name}\
-           -C /data/web_static/releases/{archive_basename}').failed:
-        return False
-    if run(f'sudo rm -rf /tmp/{archive_name}').failed:
-        return False
+    put(archive_path, '/tmp/')
+    run(f'sudo mkdir -p /data/web_static/releases/\
+           {archive_basename}/')
+    run(f'sudo tar -xzf /tmp/{archive_name}\
+           -C /data/web_static/releases/{archive_basename}')
+    run(f'sudo rm -rf /tmp/{archive_name}')
     run(f"sudo mv /data/web_static/releases/{archive_basename}/web_static/*\
         /data/web_static/releases/{archive_basename}/")
-    if run('sudo rm -rf /data/web_static/current').failed:
-        return False
-    if run('ln -sf /data/web_static/releases/{archive_basename}\
-                 /data/web_static/current').failed:
-        return False
+    run('sudo rm -rf /data/web_static/current')
+    run('ln -sf /data/web_static/releases/{archive_basename}\
+                 /data/web_static/current')
     return True
