@@ -4,6 +4,8 @@ from fabric import Connection
 from datetime import datetime
 import os
 """module contains do_pack function"""
+
+
 @task
 def do_pack(c):
     """Generate a .tgz archive from the contents of the web_static folder."""
