@@ -11,8 +11,8 @@ def do_deploy(archive_path):
     """distributes an archive to your web servers."""
     success = True
     current_directory = os.getcwd()
-    directory_path = os.path.join(current_directory, archive_path)
-    if not os.path.exists(archive_path):
+    full_archive_path = os.path.join(current_directory, archive_path)
+    if not os.path.exists(full_archive_path):
         return False
     archive_name = str(archive_path).split('/')[-1]
     archive_basename = str(archive_path).split('/')[-1].split('.')[0]
