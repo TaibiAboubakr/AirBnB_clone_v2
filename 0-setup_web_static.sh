@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 #  a Bash script that sets up your web servers for the deployment of web_static
+apt-get -y update
+apt-get install -y nginx
+ufw allow 'Nginx HTTP'
 directories=("/data/" "/data/web_static/" "/data/web_static/releases/" "/data/web_static/shared/" "/data/web_static/releases/test/")
 for directory in "${directories[@]}"; do
 	if [ ! -d "$directory" ]; then
