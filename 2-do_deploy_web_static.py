@@ -18,12 +18,13 @@ def do_deploy(archive_path):
     if run(f'mkdir /data/web_static/releases/{archive_basename}/').failed:
         return False
     if run(f'tar -xzf /tmp/{archive_name}\
-        -C /data/web_static/releases/{archive_basename}').failed:
+           -C /data/web_static/releases/{archive_basename}').failed:
         return False
     if run(f'rm - rf /tmp/{archive_name}').failed:
         return False
     if run(f'rm /data/web_static/current').failed:
         return False
     if run(f'ln -sf /data/web_static/releases/{archive_basename}\
-                 /data/web_static/current')
+                 /data/web_static/current').failed:
+        return False
     return True
