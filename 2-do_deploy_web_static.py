@@ -32,15 +32,11 @@ def do_deploy(archive_path):
         basename = str(file).split('.')[0]
 
         put(archive_path, '/tmp/')
-        run(f'sudo mkdir -p /data/web_static/releases/\
-            {basename}/')
-        run(f'sudo tar -xzf /tmp/{file}\
-            -C /data/web_static/releases/{basename}')
-        run(f'sudo rm -rf /tmp/{file}')
-        run(f"sudo mv /data/web_static/releases/{basename}/web_static/*\
-            /data/web_static/releases/{basename}/")
+        run('sudo mkdir -p /data/web_static/releases/{}').format(basename)
+        run('sudo tar -xzf /tmp/{} -C /data/web_static/releases/{}').format(file, basename)
+        run('sudo rm -rf /tmp/{}').format(file)
+        run("sudo mv /data/web_static/releases/{basename}/web_static/* /data/web_static/releases/{basename}").format(basename, basename)
         run('sudo rm -rf /data/web_static/current')
-        run(f'ln -sf /data/web_static/releases/{basename}\
-                    /data/web_static/current')
+        run('sudo ln -sf /data/web_static/releases/{} /data/web_static/current').format(basename)
         return True
     return False
