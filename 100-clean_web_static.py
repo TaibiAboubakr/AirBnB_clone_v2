@@ -6,6 +6,9 @@ Fabric script that distributes an archive to your web servers
 from datetime import datetime
 from fabric.api import *
 import os
+env.hosts = ["34.229.66.77", "18.209.225.222"]
+env.user = "ubuntu"
+env.password = "betty"
 
 
 def do_pack():
@@ -29,8 +32,6 @@ def do_deploy(archive_path):
     """
         Distribute archive.
     """
-    env.hosts = ["34.229.66.77", "18.209.225.222"]
-    env.user = "ubuntu"
     if os.path.exists(archive_path):
         name = str(archive_path).split('/')[-1]
         basename = str(name).split('.')[0]
@@ -76,8 +77,6 @@ def do_clean(number=0):
         file = backup_files[i]
         local(f"rm -rf {file}")
         print(f"Deleted: {file}")
-    env.hosts = ["34.229.66.77", "18.209.225.222"]
-    env.user = "ubuntu"
     path_rel = "/data/web_static/releases"
     backup_files = run(f"sudo ls -t {path_rel}", hide=True).stdout.split()
     num_exist = len(backup_files)
