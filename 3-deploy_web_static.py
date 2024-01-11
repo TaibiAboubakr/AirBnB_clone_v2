@@ -28,11 +28,10 @@ def do_pack():
         return None
 
 
-def do_deploy():
+def do_deploy(archive_path):
     """
         Distribute archive.
     """
-    archive_path = do_pack()
     if os.path.exists(archive_path):
         name = str(archive_path).split('/')[-1]
         basename = str(name).split('.')[0]
@@ -52,3 +51,11 @@ def do_deploy():
         return True
 
     return False
+
+
+def deploy():
+    """Full deployment
+    """
+    archive_path = do_pack()
+    res = do_deploy(archive_path)
+    return (res)
