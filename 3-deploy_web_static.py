@@ -9,6 +9,7 @@ import os
 
 env.hosts = ["34.229.66.77", "18.209.225.222"]
 env.user = "ubuntu"
+env.password = "betty"
 
 
 def do_pack():
@@ -21,11 +22,12 @@ def do_pack():
     archive_name = "web_static_{}.tgz".format(timestamp)
     print(timestamp)
     archive_path = os.path.join("versions", archive_name)
-    exit_status = local("tar -cvzf {} web_static/".format(archive_path))
-    if exit_status.ok:
-        return archive_path
-    else:
+    exit_status = local("tar -cvzf {} web_static".format(archive_path))
+    if exit_status.failed:
         return None
+    else:
+        print("web_static packed: ", archive_path)
+        return archive_path
 
 
 def do_deploy(archive_path):
@@ -38,7 +40,7 @@ def do_deploy(archive_path):
         ver_to_deploy = "/data/web_static/releases/" + basename
         tmpname = "/tmp/" + name
         put(archive_path, "/tmp/")
-        run("sudo mkdir -p {}".format(ver_to_deploy))
+        run("sudo mkdir -p {}/".format(ver_to_deploy))
         run("sudo tar -xzf {} -C {}/".format(tmpname,
                                              ver_to_deploy))
         run("sudo rm {}".format(tmpname))
