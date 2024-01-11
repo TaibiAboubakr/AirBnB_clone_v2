@@ -64,20 +64,20 @@ def do_clean(number=0):
     """  Keep it clean!
     deletes out-of-date archives,
     """
-    env.hosts = ["34.229.66.77", "18.209.225.222"]
-    env.user = "ubuntu"
-    if number < 0:
+
+    if int(number) < 0:
         return False
-    num_to_keep = 1 if number == 0 else number
+    num_to_keep = 1 if number == 0 else int(number)
     path_ver = "versions/web_static_*"
-    backup_files = local(f"sudo ls -t {path_ver}", hide=True).stdout.split()
+    backup_files = local(f"sudo ls -t {path_ver}").stdout.split()
     num_exist = len(backup_files)
     num_to_delete = 0 if num_exist <= num_to_keep else num_exist - num_to_keep
     for i in range(num_to_delete):
         file = backup_files[i]
         local(f"rm -rf {file}")
         print(f"Deleted: {file}")
-
+    env.hosts = ["34.229.66.77", "18.209.225.222"]
+    env.user = "ubuntu"
     path_rel = "/data/web_static/releases"
     backup_files = run(f"sudo ls -t {path_rel}", hide=True).stdout.split()
     num_exist = len(backup_files)
