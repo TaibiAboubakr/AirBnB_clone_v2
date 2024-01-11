@@ -7,8 +7,9 @@ from datetime import datetime
 from fabric.api import *
 import os
 
-env.hosts = ["44.210.150.159", "35.173.47.15"]
+env.hosts = ["34.229.66.77", "18.209.225.222"]
 env.user = "ubuntu"
+env.password = "betty"
 
 
 def do_deploy(archive_path):
