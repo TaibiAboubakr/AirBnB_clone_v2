@@ -53,7 +53,7 @@ def do_deploy(archive_path):
        }
     }
     """
-        run("echo ($content) | sudo tee /etc/nginx/sites-available/default")
+        run("echo '$content' | sudo tee /etc/nginx/sites-available/default")
         run("sudo service nginx reload")
         print("New version deployed!")
         return True
