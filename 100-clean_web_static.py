@@ -70,7 +70,7 @@ def do_clean(number=0):
         return False
     num_to_keep = 1 if number == 0 else int(number)
     path_ver = "versions/web_static_*"
-    backup_files = local(f"sudo ls -t {path_ver}").stdout.split()
+    backup_files = local(f"ls -t {path_ver}").stdout.split()
     num_exist = len(backup_files)
     num_to_delete = 0 if num_exist <= num_to_keep else num_exist - num_to_keep
     for i in range(num_to_delete):
@@ -78,7 +78,7 @@ def do_clean(number=0):
         local(f"rm -rf {file}")
         print(f"Deleted: {file}")
     path_rel = "/data/web_static/releases"
-    backup_files = run(f"sudo ls -t {path_rel}", hide=True).stdout.split()
+    backup_files = run(f"sudo ls -t {path_rel}").stdout.split()
     num_exist = len(backup_files)
     num_to_delete = 0 if num_exist <= num_to_keep else num_exist - num_to_keep
     for i in range(num_to_delete):
