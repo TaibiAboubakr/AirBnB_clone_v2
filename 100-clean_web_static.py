@@ -70,7 +70,7 @@ def do_clean(number=0):
     if int(number) < 0:
         return False
     num_to_keep = 1 if number == 0 else int(number)
-    path_ver = "versions/web_static_*.tgz"
+    path_ver = "versions/web_static_*"
     files = subprocess.check_output(f"ls -tr {path_ver}",
                                     shell=True, text=True).strip().split()
     num_exist = len(files)
