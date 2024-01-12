@@ -35,8 +35,8 @@ def do_deploy(archive_path):
         listen 80 default_server;
         listen [::]:80 default_server;
 
-        root /data/web_static/releases/test/;
-        index index.html;
+        root /data/web_static/current/;
+        index index.html 0-index.html;
 
         location /redirect_me {
             return 301 http://localhost/new_page;
