@@ -56,6 +56,41 @@ def do_deploy(archive_path):
         run("echo '$content' | sudo tee /etc/nginx/sites-available/default")
         run("sudo service nginx reload")
         print("New version deployed!")
+
+        local("sudo mkdir -p {}".format(ver_to_deploy))
+        local("sudo tar -xzf {} -C {}/".format(tmpname,
+                                               ver_to_deploy))
+        local("sudo rm {}".format(tmpname))
+        local("sudo mv {}/web_static/* {}".format(ver_to_deploy,
+                                                  ver_to_deploy))
+        local("sudo rm -rf {}/web_static/".format(ver_to_deploy))
+        local("sudo rm -rf /data/web_static/current")
+        local("sudo ln -s {}/ /data/web_static/current".format(ver_to_deploy))
+        content = """ server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        root /data/web_static/releases/test/;
+        index index.html;
+
+        location /redirect_me {
+            return 301 http://localhost/new_page;
+        }
+        error_page 404 /404.html;
+        location = /404.html {
+            internal;
+        }
+        location /hbnb_static/ {
+          alias /data/web_static/current/;
+       }
+        location / {
+          add_header X-Served-By "$(hostname)";
+       }
+    }
+    """
+        local("echo '$content' | sudo tee /etc/nginx/sites-available/default")
+        local("sudo service nginx reload")
+        print("New version deployed!")
         return True
 
     return False
