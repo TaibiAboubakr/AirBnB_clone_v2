@@ -5,6 +5,7 @@ Fabric script that distributes an archive to your web servers
 
 from datetime import datetime
 from fabric.api import *
+import subprocess
 import os
 env.hosts = ["34.229.66.77", "18.209.225.222"]
 env.user = "ubuntu"
@@ -69,15 +70,17 @@ def do_clean(number=0):
     if int(number) < 0:
         return False
     num_to_keep = 1 if number == 0 else int(number)
-    path_ver = "versions/web_static_*"
-    backup_files = local(f"ls -t {path_ver}").stdout.split()
-    num_exist = len(backup_files)
+    path_ver = "versions/web_static_*.tgz"
+    files = subprocess.check_output(f"ls -tr {path_ver}",
+                                    shell=True, text=True).strip().split()
+    num_exist = len(files)
     num_to_delete = 0 if num_exist <= num_to_keep else num_exist - num_to_keep
     for i in range(num_to_delete):
-        file = backup_files[i]
+        file = files[i]
         local(f"rm -rf {file}")
+        print(files[i])
         print(f"Deleted: {file}")
-    path_rel = "/data/web_static/releases"
+    path_rel = "/data/web_static/releases/"
     backup_files = run(f"sudo ls -t {path_rel}").stdout.split()
     num_exist = len(backup_files)
     num_to_delete = 0 if num_exist <= num_to_keep else num_exist - num_to_keep
