@@ -61,7 +61,7 @@ def deploy():
     res = do_deploy(archive_path)
     return (res)
 
-
+@task
 def do_clean(number=0):
     """  Keep it clean!
     deletes out-of-date archives,
@@ -69,7 +69,7 @@ def do_clean(number=0):
 
     if int(number) < 0:
         return False
-    num = 1 if number == 0 else int(number)
+    num = 1 if int(number) == 0 else int(number)
     try:
         local("ls -1t versions/ | grep '^web_static_' | tail -n +{} | \
               xargs -I {{}} rm -rf versions/{{}}".format(num + 1))
