@@ -61,7 +61,7 @@ def deploy():
     res = do_deploy(archive_path)
     return (res)
 
-@task
+
 def do_clean(number=0):
     """  Keep it clean!
     deletes out-of-date archives,
