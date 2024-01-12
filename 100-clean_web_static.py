@@ -81,6 +81,10 @@ def do_clean(number=0):
         print(files[i])
         print(f"Deleted: {file}")
     path_rel = "/data/web_static/releases/"
-    run(f"files=$(ls -t {path_rel})")
-    run('if [ "${#files[@]}" -ge "$N" ]; then rm "${files[N-1]}')
-
+    backup_files = run(f"files=(ls -t {path_rel})")
+    num_exist = len(backup_files)
+    num_to_delete = 0 if num_exist <= num_to_keep else num_exist - num_to_keep
+    for i in range(num_to_delete):
+        file = backup_files[i]
+        run(f"rm -rf {file}")
+        print(f"Deleted: {file}")
