@@ -69,22 +69,12 @@ def do_clean(number=0):
 
     if int(number) < 0:
         return False
-    num_to_keep = 1 if number == 0 else int(number)
-    path_ver = "versions/web_static_*"
-    files = subprocess.check_output(f"ls -tr {path_ver}",
-                                    shell=True, text=True).strip().split()
-    num_exist = len(files)
-    num_to_delete = 0 if num_exist <= num_to_keep else num_exist - num_to_keep
-    for i in range(num_to_delete):
-        file = files[i]
-        local(f"rm -rf {file}")
-        print(files[i])
-        print(f"Deleted: {file}")
-    path_rel = "/data/web_static/releases/"
-    backup_files = run(f"files=(ls -t {path_rel})")
-    num_exist = len(backup_files)
-    num_to_delete = 0 if num_exist <= num_to_keep else num_exist - num_to_keep
-    for i in range(num_to_delete):
-        file = backup_files[i]
-        run(f"rm -rf {file}")
-        print(f"Deleted: {file}")
+    num = 1 if number == 0 else int(number)
+    try:
+        local("ls -1t versions/ | grep '^web_static_' | tail -n +{} | \
+              xargs -I {{}} rm -rf versions/{{}}".format(num + 1))
+        run("ls -1t /data/web_static/releases/ | grep '^web_static_' | \
+            tail -n +{} | xargs -I {{}} sudo rm -rf \
+                /data/web_static/releases/{{}}".format(num + 1))
+    except Exception as e:
+        pass
