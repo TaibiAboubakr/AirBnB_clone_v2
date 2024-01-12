@@ -26,8 +26,8 @@ def do_deploy(archive_path):
         run("sudo tar -xzf {} -C {}/".format(tmpname,
                                              ver_to_deploy))
         run("sudo rm {}".format(tmpname))
-        run("sudo rsync -a {}/web_static/* {}".format(ver_to_deploy,
-                                                      ver_to_deploy))
+        run("sudo mv {}/web_static/* {}".format(ver_to_deploy,
+                                                ver_to_deploy))
         run("sudo rm -rf {}/web_static/".format(ver_to_deploy))
         run("sudo rm -rf /data/web_static/current")
         run("sudo ln -s {}/ /data/web_static/current".format(ver_to_deploy))
@@ -35,8 +35,8 @@ def do_deploy(archive_path):
         listen 80 default_server;
         listen [::]:80 default_server;
 
-        root /data/web_static/current/;
-        index index.html 0-index.html;
+        root /data/web_static/releases/test/;
+        index index.html;
 
         location /redirect_me {
             return 301 http://localhost/new_page;
@@ -53,22 +53,9 @@ def do_deploy(archive_path):
        }
     }
     """
-        run(f'echo "{content}" | sudo tee /etc/nginx/sites-available/default')
+        run("echo '$content' | sudo tee /etc/nginx/sites-available/default")
         run("sudo service nginx reload")
         print("New version deployed!")
-
-        local(f"sudo cp {archive_path} /tmp/")
-        local("sudo mkdir -p {}".format(ver_to_deploy))
-        local("sudo tar -xzf {} -C {}/".format(tmpname,
-                                               ver_to_deploy))
-        local("sudo rm {}".format(tmpname))
-        local("sudo rsync -a {}/web_static/* {}".format(ver_to_deploy,
-                                                        ver_to_deploy))
-        local("sudo rm -rf {}/web_static/".format(ver_to_deploy))
-        local("sudo rm -rf /data/web_static/current")
-        local("sudo ln -s {}/ /data/web_static/current".format(ver_to_deploy))
-
-        local("sudo service nginx reload")
-        print("New version deployed!")
         return True
+
     return False
