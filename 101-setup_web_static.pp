@@ -1,6 +1,6 @@
 #site.pp
 
-$nginx='
+$nginx=@(EOT)
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -22,9 +22,7 @@ server {
     }
 
     location / {
-      add_header X-Served-By {$hostname};
-    }
-}'
+EOT
 
 $index='
 <html>
@@ -61,6 +59,13 @@ file { '/etc/nginx/sites-available/default':
   require => Service['nginx'],
 }
 
+exec {'add content':
+path     => '/usr/bin:/usr/sbin:/bin',
+command  => 'echo -n "    add_header X-Served-By $($(echo hostname));\n    }\n}" | sudo tee -a /etc/nginx/sites-available/default',
+provider => shell,
+require  => File['/etc/nginx/sites-available/default'],
+}
+
 file { [ '/data', '/data/web_static', '/data/web_static/releases', '/data/web_static/shared', '/data/web_static/releases/test' ]:
   ensure => directory,
   owner  => 'ubuntu',
@@ -90,4 +95,10 @@ file { '/data/web_static/current':
   ensure  => link,
   target  => '/data/web_static/releases/test',
   require => File['/data/web_static/releases/test/index.html'],
+}
+
+exec { 'restart nginx':
+  path     => '/usr/bin:/usr/sbin:/bin',
+  command  => 'sudo service restart nginx',
+  provider => shell,
 }
