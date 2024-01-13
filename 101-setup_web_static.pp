@@ -1,10 +1,4 @@
 #site.pp
-exec { 'update':
-  path     => '/usr/bin:/usr/sbin:/bin',
-  command  => 'sudo apt-get update -y',
-  provider => shell,
-  
-}
 
 $nginx=@(EOT)
 server {
@@ -30,14 +24,15 @@ server {
     location / {
 EOT
 
-# web_static/index.html.erb
+$index='
 <html>
   <head>
   </head>
   <body>
     Holberton School
   </body>
-</html>'
+</html>
+'
 
 
 
@@ -105,6 +100,6 @@ file { '/data/web_static/current':
 
 exec { 'restart nginx':
   path     => '/usr/bin:/usr/sbin:/bin',
-  command  => 'sudo service restart nginx',
+  command  => 'sudo service nginx restart',
   provider => shell,
 }
