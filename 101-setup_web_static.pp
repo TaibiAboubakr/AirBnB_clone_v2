@@ -24,8 +24,7 @@ server {
     location / {
 EOT
 
-$index='
-<html>
+$index='<html>
   <head>
   </head>
   <body>
