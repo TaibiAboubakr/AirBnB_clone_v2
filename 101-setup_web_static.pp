@@ -68,18 +68,14 @@ exec {'add content':
 path     => '/usr/bin:/usr/sbin:/bin',
 command  => 'echo -n "    add_header X-Served-By $($(echo hostname));\n    }\n}" | sudo tee -a /etc/nginx/sites-available/default',
 provider => shell,
+require  => File['/etc/nginx/sites-available/default'],
 }
 
-file { [ '/data', '/data/web_static' ]:
+file { [ '/data', '/data/web_static', '/data/web_static/releases', '/data/web_static/shared', '/data/web_static/releases/test' ]:
   ensure => directory,
   owner  => 'ubuntu',
   group  => 'ubuntu',
   mode   => '0755',
-}
-
-file { [ '/data/web_static/releases', '/data/web_static/shared', '/data/web_static/releases/test' ]:
-  ensure  => directory,
-  mode    => '0755',
 }
 
 file { '/data/web_static/releases/test/index.html':
@@ -88,6 +84,7 @@ file { '/data/web_static/releases/test/index.html':
   group   => 'ubuntu',
   mode    => '0644',
   content => $index,
+  require => File['/data/web_static/releases/test'],
 }
 
 file { '/data/web_static/releases/test/404.html':
@@ -96,11 +93,13 @@ file { '/data/web_static/releases/test/404.html':
   group   => 'ubuntu',
   mode    => '0644',
   content => 'Ceci n\'est pas une page',
+  require => File['/data/web_static/releases/test'],
 }
 
 file { '/data/web_static/current':
   ensure  => link,
   target  => '/data/web_static/releases/test',
+  require => File['/data/web_static/releases/test/index.html'],
 }
 
 exec { 'restart nginx':
