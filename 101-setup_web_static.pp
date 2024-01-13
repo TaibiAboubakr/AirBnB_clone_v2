@@ -37,9 +37,8 @@ $index='<html>
 
 exec { 'update':
   path     => '/usr/bin:/usr/sbin:/bin',
-  command  => 'sudo apt-get update -y',
+  command  => '/usr/bin/sudo apt -y update',
   provider => shell,
-  
 }
 
 package { 'nginx':
@@ -50,6 +49,12 @@ service { 'nginx':
   ensure  => running,
   enable  => true,
   require => Package['nginx'],
+}
+
+exec { 'ufw HTTP':
+  path     => '/usr/bin:/usr/sbin:/bin',
+  command  => '/usr/bin/sudo ufw allow "Nginx HTTP"',
+  provider => shell,
 }
 
 file { '/etc/nginx/sites-available/default':
@@ -99,6 +104,6 @@ file { '/data/web_static/current':
 
 exec { 'restart nginx':
   path     => '/usr/bin:/usr/sbin:/bin',
-  command  => 'sudo service nginx restart',
+  command  => '/usr/bin/sudo service nginx restart',
   provider => shell,
 }
