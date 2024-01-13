@@ -6,56 +6,7 @@ exec { 'update':
   
 }
 
-package { 'nginx':
-  ensure => installed,
-}
-
-service { 'nginx':
-  ensure  => running,
-  enable  => true,
-  require => Package['nginx'],
-}
-
-file { '/etc/nginx/sites-available/default':
-  ensure  => file,
-  mode    => '0644',
-  content => template('nginx/default.erb'),
-  require => Service['nginx'],
-  notify  => Service['nginx'],
-}
-
-file { [ '/data', '/data/web_static', '/data/web_static/releases', '/data/web_static/shared', '/data/web_static/releases/test' ]:
-  ensure => directory,
-  owner  => 'ubuntu',
-  group  => 'ubuntu',
-  mode   => '0755',
-}
-
-file { '/data/web_static/releases/test/index.html':
-  ensure  => file,
-  owner   => 'ubuntu',
-  group   => 'ubuntu',
-  mode    => '0644',
-  content => template('web_static/index.html.erb'),
-  require => File['/data/web_static/releases/test'],
-}
-
-file { '/data/web_static/releases/test/404.html':
-  ensure  => file,
-  owner   => 'ubuntu',
-  group   => 'ubuntu',
-  mode    => '0644',
-  content => 'Ceci n\'est pas une page',
-  require => File['/data/web_static/releases/test'],
-}
-
-file { '/data/web_static/current':
-  ensure  => link,
-  target  => '/data/web_static/releases/test',
-  require => File['/data/web_static/releases/test/index.html'],
-}
-
-# nginx/default.erb
+$nginx=@(EOT)
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -77,9 +28,7 @@ server {
     }
 
     location / {
-      add_header X-Served-By {$hostname};
-    }
-}
+EOT
 
 # web_static/index.html.erb
 <html>
@@ -88,4 +37,74 @@ server {
   <body>
     Holberton School
   </body>
-</html>
+</html>'
+
+
+
+exec { 'update':
+  path     => '/usr/bin:/usr/sbin:/bin',
+  command  => 'sudo apt-get update -y',
+  provider => shell,
+  
+}
+
+package { 'nginx':
+  ensure => installed,
+}
+
+service { 'nginx':
+  ensure  => running,
+  enable  => true,
+  require => Package['nginx'],
+}
+
+file { '/etc/nginx/sites-available/default':
+  ensure  => file,
+  mode    => '0644',
+  content => $nginx,
+  require => Service['nginx'],
+}
+
+exec {'add content':
+path     => '/usr/bin:/usr/sbin:/bin',
+command  => 'echo -n "    add_header X-Served-By $($(echo hostname));\n    }\n}" | sudo tee -a /etc/nginx/sites-available/default',
+provider => shell,
+require  => File['/etc/nginx/sites-available/default'],
+}
+
+file { [ '/data', '/data/web_static', '/data/web_static/releases', '/data/web_static/shared', '/data/web_static/releases/test' ]:
+  ensure => directory,
+  owner  => 'ubuntu',
+  group  => 'ubuntu',
+  mode   => '0755',
+}
+
+file { '/data/web_static/releases/test/index.html':
+  ensure  => file,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+  mode    => '0644',
+  content => $index,
+  require => File['/data/web_static/releases/test'],
+}
+
+file { '/data/web_static/releases/test/404.html':
+  ensure  => file,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+  mode    => '0644',
+  content => 'Ceci n\'est pas une page',
+  require => File['/data/web_static/releases/test'],
+}
+
+file { '/data/web_static/current':
+  ensure  => link,
+  target  => '/data/web_static/releases/test',
+  require => File['/data/web_static/releases/test/index.html'],
+}
+
+exec { 'restart nginx':
+  path     => '/usr/bin:/usr/sbin:/bin',
+  command  => 'sudo service restart nginx',
+  provider => shell,
+}
