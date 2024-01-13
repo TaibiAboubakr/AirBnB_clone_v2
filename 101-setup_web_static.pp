@@ -1,4 +1,10 @@
-# site.pp
+#site.pp
+exec { 'update':
+  path     => '/usr/bin:/usr/sbin:/bin',
+  command  => 'sudo apt-get update -y',
+  provider => shell,
+  
+}
 
 package { 'nginx':
   ensure => installed,
@@ -50,12 +56,6 @@ file { '/data/web_static/current':
 }
 
 # nginx/default.erb
-file { '/etc/nginx/sites-available/default':
-  ensure  => file,
-  owner   => 'ubuntu',
-  group   => 'ubuntu',
-  mode    => '0644',
-  content => '
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -78,6 +78,14 @@ server {
 
     location / {
       add_header X-Served-By {$hostname};
-    }',
+    }
 }
-}
+
+# web_static/index.html.erb
+<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>
