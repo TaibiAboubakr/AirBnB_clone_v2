@@ -99,6 +99,8 @@ file { '/data/web_static/releases/test/404.html':
 file { '/data/web_static/current':
   ensure  => link,
   target  => '/data/web_static/releases/test',
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
   require => File['/data/web_static/releases/test/index.html'],
 }
 
