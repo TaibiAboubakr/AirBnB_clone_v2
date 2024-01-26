@@ -29,7 +29,7 @@ def c_page(text):
 @app.route('/python', strict_slashes=False)
 def python_page(text="is_cool"):
     """ Pyhton page """
-    return f"Pyhton {text}".replace("_", " ")
+    return f"Python {text}".replace("_", " ")
 
 
 if __name__ == "__main__":
