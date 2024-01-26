@@ -12,10 +12,12 @@ def Home():
     """ Home page """
     return "Hello HBNB!"
 
+
 @app.route('/hbnb', strict_slashes=False)
 def Hbnb_page():
     """ Hbnb page """
     return "HBNB"
+
 
 @app.route('/c/<text>', strict_slashes=False)
 def c_page(text):
