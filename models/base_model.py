@@ -51,7 +51,7 @@ class BaseModel:
     def to_dict(self):
         """Convert instance into dict format"""
         dictionary = dict(self.__dict__)
-        dictionary.pop('_sa_instance_state', None)  # Remove SQLAlchemy state
+        dictionary.pop('_sa_instance_state', None)
         dictionary.update({'__class__': type(self).__name__})
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
