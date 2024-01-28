@@ -41,5 +41,6 @@ def list_cities_by_states():
     sorted_states = sorted(states, key=lambda x: x.name)
     return render_template('8-cities_by_states.html', states=sorted_states)
 
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
