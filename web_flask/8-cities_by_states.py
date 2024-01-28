@@ -37,9 +37,8 @@ def list_states():
 @app.route('/cities_by_states', strict_slashes=False)
 def list_cities_by_states():
     """ cities by states page """
-    states = storage.all(State).values()
-    sorted_states = sorted(states, key=lambda x: x.name)
-    return render_template('8-cities_by_states.html', states=sorted_states)
+    all_states = storage.all(State).values()
+    return render_template('8-cities_by_states.html', all_states=all_states)
 
 
 if __name__ == "__main__":
