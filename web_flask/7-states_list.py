@@ -24,7 +24,8 @@ def teardown_appcontext(exception):
     This function will be called after each request.
     It closes the SQLAlchemy session to clean up resources.
     """
-    #storage.close()
+    storage.close()
+
 
 @app.route('/states_list', strict_slashes=False)
 def list_states():
