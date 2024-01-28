@@ -1,16 +1,7 @@
 #!/usr/bin/python3
 """ Script that starts a Flask web application """
 from flask import Flask, render_template
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from models.base_model import Base
 from models.state import State
-from models.city import City
-from models.user import User
-from models.place import Place
-from models.amenity import Amenity
-from models.review import Review
-from models import base_model
 from models import storage
 
 """ Import modules """
