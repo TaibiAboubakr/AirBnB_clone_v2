@@ -29,8 +29,11 @@ def list_states():
 def state_by_id(id):
     """ states by id page """
     all_states = storage.all(State).values()
-    state = next((state for st in all_states if st.id == id), None)
-    return render_template('9-states.html', state=state, id=id)
+    for state in all_states:
+        if state.id == id:
+            return render_template('9-states.html', state=state)
+    return render_template('9-states.html')
+    
 
 
 if __name__ == "__main__":
